@@ -12,6 +12,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Local.testsettings = Local.testsettings
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NativeDll", "NativeDll\NativeDll.vcxproj", "{B6345BB9-AA77-449B-88DB-30B4B0708823}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThreadDemo", "ThreadDemo\ThreadDemo.csproj", "{2E313B2B-5E0C-435D-A03F-445849060EC1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +30,13 @@ Global
 		{0C32B598-B812-4902-A410-0D3434A1EB7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C32B598-B812-4902-A410-0D3434A1EB7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C32B598-B812-4902-A410-0D3434A1EB7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6345BB9-AA77-449B-88DB-30B4B0708823}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{B6345BB9-AA77-449B-88DB-30B4B0708823}.Debug|Any CPU.Build.0 = Debug|Win32
+		{B6345BB9-AA77-449B-88DB-30B4B0708823}.Release|Any CPU.ActiveCfg = Release|Win32
+		{2E313B2B-5E0C-435D-A03F-445849060EC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E313B2B-5E0C-435D-A03F-445849060EC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E313B2B-5E0C-435D-A03F-445849060EC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E313B2B-5E0C-435D-A03F-445849060EC1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
