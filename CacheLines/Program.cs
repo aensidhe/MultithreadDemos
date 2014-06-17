@@ -2,49 +2,74 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Wintellect.Threading.LogicalProcessor;
+using System.Reflection;
 
 namespace CacheLines
 {
 	internal class Program
 	{
+		private static readonly Dictionary<TestMode, Tuple<long, long, long>> Results = new Dictionary<TestMode, Tuple<long, long, long>>
+		{
+			{ TestMode.Default, Tuple.Create(long.MaxValue, 0L, 0L) },
+			{ TestMode.Slow, Tuple.Create(long.MaxValue, 0L, 0L) },
+			{ TestMode.Fast, Tuple.Create(long.MaxValue, 0L, 0L) },
+			{ TestMode.Struct, Tuple.Create(long.MaxValue, 0L, 0L) },
+		};
+
+		private static Type[] Types;
+
 		internal static void Main(string[] args)
 		{
-			Process.GetCurrentProcess().ProcessorAffinity = new IntPtr(17);
-			//Process.GetCurrentProcess().ProcessorAffinity = new IntPtr(3);
+			Process.GetCurrentProcess().ProcessorAffinity = new IntPtr(0x9);
 
-			TestAll();
-			TestAll();
-			TestAll();
+			// Warming up, jitting, etc
+			Console.WriteLine("Warming up");
+			TestAll(false, 0);
 
+			Console.WriteLine("Testing. Tests can take up to 1 minute");
+			for (var i = 0; i < 10; i++)
+				TestAll(true, i);
+
+			foreach (var pair in Results)
+				Console.WriteLine("{0,-7}: Min = {1,9:N0} ticks, Max = {2,9:N0} ticks, Avg = {3,9:N0} ticks", pair.Key, pair.Value.Item1, pair.Value.Item2, pair.Value.Item3);
 			Console.ReadKey();
 		}
 
-		private static void TestAll()
+		private static void TestAll(bool testMode, int count)
 		{
-			Console.WriteLine("Struct auto");
-			new TestStruct32().Test().Wait();
+			var distinctCheck = new HashSet<TestMode>();
+			foreach (var test in GetTests())
+			{
+				if (!distinctCheck.Add(test.Mode))
+					throw new InvalidOperationException("More than 1 test per mode");
 
-			Console.WriteLine("Struct sequential");
-			new TestStruct32Sequential().Test().Wait();
-
-			Console.WriteLine("Struct explicit");
-			new TestStruct32Explicit().Test().Wait();
-
-			Console.WriteLine("Struct explicit 64");
-			new TestStruct64().Test().Wait();
-
-			Console.WriteLine("Class");
-			new TestClass().Test().Wait();
-
-			Console.WriteLine("Class explicit");
-			new TestClassExplicit().Test().Wait();
+				test.Test().Wait();
+				StoreResults(test.Mode, test.ElapsedTicks, testMode, count);
+			}
 		}
 
-		
+		private static ITest[] GetTests()
+		{
+			return Assembly.GetExecutingAssembly().GetTypes()
+				.Where(x => x.IsClass && !x.IsAbstract && x.GetInterfaces().Contains(typeof(ITest)))
+				.Select(x => Activator.CreateInstance(x))
+				.Cast<ITest>()
+				.ToArray();
+		}
+
+		private static void StoreResults(TestMode mode, long ticks, bool testMode, int count)
+		{
+			if (!testMode)
+				return;
+
+			var old = Results[mode];
+			Results[mode] = Tuple.Create(
+				Math.Min(old.Item1, ticks),
+				Math.Max(old.Item2, ticks),
+				(old.Item3 * count + ticks) / (count + 1)
+			);
+		}
+
+
 	}
 }

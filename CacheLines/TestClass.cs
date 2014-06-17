@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CacheLines
 {
-	internal class TestClass
+	internal class TestClass : CacheLines.ITest
 	{
 		private const int Iterations = 100 * 1000 * 1000;
 		private int Operations = 2;
@@ -33,6 +33,10 @@ namespace CacheLines
 			return e;
 		}
 
+		public long ElapsedTicks { get; private set; }
+
+		public TestMode Mode { get { return TestMode.Default; } }
+
 		private void AccessData(Data d, int index, CountdownEvent e)
 		{
 			for (var i = 0; i < Iterations; i++)
@@ -42,7 +46,7 @@ namespace CacheLines
 					d.Second++;
 
 			if (Interlocked.Decrement(ref Operations) != 0)
-				Console.WriteLine("Time: {0:N0}", Stopwatch.GetTimestamp() - StartTime);
+				ElapsedTicks = Stopwatch.GetTimestamp() - StartTime;
 			e.Signal();
 		}
 	}

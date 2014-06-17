@@ -9,19 +9,19 @@ using System.Threading.Tasks;
 
 namespace CacheLines
 {
-	class TestStruct64
+	internal class TestClassExplicitFast : ITest
 	{
 		private const int Iterations = 100 * 1000 * 1000;
 		private int Operations = 2;
 		private long StartTime;
 
 		[StructLayout(LayoutKind.Explicit)]
-		private struct Data
+		private class Data
 		{
 			[FieldOffset(0)]
 			public int First;
 
-			[FieldOffset(64)]
+			[FieldOffset(128)]
 			public int Second;
 		}
 
@@ -37,6 +37,8 @@ namespace CacheLines
 			return e;
 		}
 
+		public long ElapsedTicks { get; private set; }
+
 		private void AccessData(Data d, int index, CountdownEvent e)
 		{
 			for (var i = 0; i < Iterations; i++)
@@ -46,8 +48,14 @@ namespace CacheLines
 					d.Second++;
 
 			if (Interlocked.Decrement(ref Operations) != 0)
-				Console.WriteLine("Time: {0:N0}", Stopwatch.GetTimestamp() - StartTime);
+				ElapsedTicks = Stopwatch.GetTimestamp() - StartTime;
 			e.Signal();
+		}
+
+
+		public TestMode Mode
+		{
+			get { return TestMode.Fast; }
 		}
 	}
 }
