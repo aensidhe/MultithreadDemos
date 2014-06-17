@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestClassExplicit.cs" />
     <Compile Include="TestClass.cs" />
     <Compile Include="TestStruct32Explicit.cs" />
     <Compile Include="TestStruct32Sequential.cs" />

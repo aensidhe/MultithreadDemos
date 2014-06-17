@@ -14,6 +14,10 @@ namespace CacheLines
 	{
 		internal static void Main(string[] args)
 		{
+			Process.GetCurrentProcess().ProcessorAffinity = new IntPtr(17);
+			//Process.GetCurrentProcess().ProcessorAffinity = new IntPtr(3);
+
+			TestAll();
 			TestAll();
 			TestAll();
 
@@ -36,6 +40,9 @@ namespace CacheLines
 
 			Console.WriteLine("Class");
 			new TestClass().Test().Wait();
+
+			Console.WriteLine("Class explicit");
+			new TestClassExplicit().Test().Wait();
 		}
 
 		
