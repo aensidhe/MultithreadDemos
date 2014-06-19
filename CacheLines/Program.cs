@@ -26,13 +26,26 @@ namespace CacheLines
 			Console.WriteLine("Warming up");
 			TestAll(false, 0);
 
-			Console.WriteLine("Testing. Tests can take up to 1 minute");
+			Console.WriteLine("Testing, HT is off. Tests can take up to 1 minute");
+			TestAndPrintOutput();
+
+			Process.GetCurrentProcess().ProcessorAffinity = new IntPtr(0x3);
+			foreach (var key in Results.Keys.ToArray())
+				Results[key] = Tuple.Create(long.MaxValue, 0L, 0L);
+
+			Console.WriteLine("Testing, HT is on. Tests can take up to 1 minute");
+			TestAndPrintOutput();
+			Console.ReadKey();
+		}
+
+		private static void TestAndPrintOutput()
+		{
 			for (var i = 0; i < 10; i++)
 				TestAll(true, i);
 
 			foreach (var pair in Results)
 				Console.WriteLine("{0,-7}: Min = {1,9:N0} ticks, Max = {2,9:N0} ticks, Avg = {3,9:N0} ticks", pair.Key, pair.Value.Item1, pair.Value.Item2, pair.Value.Item3);
-			Console.ReadKey();
+
 		}
 
 		private static void TestAll(bool testMode, int count)
