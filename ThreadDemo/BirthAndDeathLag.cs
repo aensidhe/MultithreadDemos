@@ -21,7 +21,7 @@ namespace ThreadDemo
 
 		public int GetSomeIntWithThread()
 		{
-			var t = new Thread(_ => { Console.WriteLine("ManagedThreadId = {0}", Thread.CurrentThread.ManagedThreadId); });
+			var t = new Thread(_ => { Console.WriteLine("{1:HH.mm.ss}. ManagedThreadId = {0}", Thread.CurrentThread.ManagedThreadId, DateTime.Now); });
 			t.Start();
 			t.Join();
 			return fnNativeDll();
@@ -29,7 +29,7 @@ namespace ThreadDemo
 
 		public int GetSomeIntWithThreadThatDidntStart()
 		{
-			var t = new Thread(_ => { Console.WriteLine("ManagedThreadId = {0}", Thread.CurrentThread.ManagedThreadId); });
+			var t = new Thread(_ => { Console.WriteLine("{1:HH.mm.ss}. ManagedThreadId = {0}", Thread.CurrentThread.ManagedThreadId, DateTime.Now); });
 			return fnNativeDll();
 		}
     }
